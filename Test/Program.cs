@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using TreeSerialize;
 
 namespace Test
@@ -9,33 +6,28 @@ namespace Test
     [Serializable]
     class A
     {
-        private string A1 = "asdfasdf.";
-        private string A2 = "asdfasdf.";
+        private string A1 = "Some string.";
+        private string A2 = "Some string.";
     }
 
     [Serializable]
     class B
     {
         private A B1 = new A();
-        private A B2 = new A();
-        private A B3 = new A();
+        private B B2;
+        public int B3 { get; }
+
+        public B(bool first = true)
+        {
+            if (first) B2 = new B(false);
+        }
     }
 
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Serialize(new B()).Length);
-        }
-
-        static byte[] Serialize(object obj)
-        {
-            using (var stream = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(stream, obj);
-                return stream.ToArray();
-            }
+            Console.WriteLine(TreeSerializer.MakeTree(new B()));
         }
     }
 }
